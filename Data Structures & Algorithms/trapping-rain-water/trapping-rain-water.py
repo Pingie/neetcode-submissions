@@ -1,18 +1,24 @@
 class Solution:
     def trap(self, height: List[int]) -> int:
         total_water = 0
-        left, right = 0, len(height) - 1
-        left_max, right_max = height[left], height[right]
+        stack = []
 
-        while left < right:
-            if(left_max < right_max):
-                left += 1
-                left_max = max(left_max, height[left])
-                total_water += left_max - height[left]
+        for i in range(len(height)):
+            while stack and height[stack[-1]] < height[i]:
+                bottom = stack.pop()
+
+                if not stack:
+                    break
+
+                left = stack[-1]
+                right = i
+
+                bounded_height = min(height[left], height[right]) - height[bottom]
+                width = right - left - 1
+
+                total_water += bounded_height * width
             
-            else:
-                right -= 1
-                right_max = max(right_max, height[right])
-                total_water += right_max - height[right]
+            stack.append(i)
+
 
         return total_water
